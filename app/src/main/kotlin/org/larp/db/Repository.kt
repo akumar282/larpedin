@@ -32,6 +32,22 @@ class Repository {
         larp_score: Int,
         created_at: Timestamp
     ) {
+        val createEntry = """
+            INSERT INTO users (username, ip_address, larp_score, created_at)
+            VALUES (?, ?, ?, ?)
+        """.trimIndent()
 
+        try {
+            dbManager?.connection?.prepareStatement(createEntry).use {
+                preparedStatement ->
+                preparedStatement?.setString(1, username)
+                preparedStatement?.setString(2, ip_address)
+                preparedStatement?.setInt(3, larp_score)
+                preparedStatement?.setTimestamp(4, created_at)
+                preparedStatement?.execute()
+            }
+        } catch (e: SQLException) {
+            println("Error Creating Entry")
+        }
     }
 }
